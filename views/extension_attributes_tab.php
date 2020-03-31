@@ -36,7 +36,9 @@ $(document).on('appReady', function(){
                     { data: 'result' }
                 ],
                 createdRow: function( nRow, aData, iDataIndex ) {
-
+                    // Format new lines
+                    var celldata=$('td:eq(1)', nRow).text();
+                    $('td:eq(1)', nRow).html(celldata.replace(/\n/g, "<br>").replace(/\r/g, "<br>"))
                 }
             });
         }
