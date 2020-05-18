@@ -20,8 +20,7 @@ def process_ea_xml(ea_xml):
     tree = ElementTree.parse(ea_xml)
     root = tree.getroot()
     xmldict = XmlDictConfig(root)
-
-    script_contents = xmldict['scriptContentsMac']
+    script_contents = xmldict['scriptContentsMac'].replace("\r", "").rstrip()
 
     # Check if sudo is being used in script and throw warning
     if 'sudo ' in script_contents:
