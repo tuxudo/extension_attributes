@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/local/munkireport/munkireport-python2
 # Python scirpt to process Jamf extension attribute xml files
 
 import subprocess
