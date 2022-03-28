@@ -1,4 +1,4 @@
-#!/usr/local/munkireport/munkireport-python2
+#!/usr/local/munki/munki-python
 # Python scirpt to process Jamf extension attribute xml files
 
 import subprocess
@@ -24,7 +24,7 @@ def process_ea_xml(ea_xml):
 
     # Check if sudo is being used in script and throw warning
     if 'sudo ' in script_contents:
-        print "WARNING: 'sudo' should not be used in extension attribute scripts - " + ea_xml
+        print("WARNING: 'sudo' should not be used in extension attribute scripts - " + ea_xml)
 
     proc = subprocess.Popen(script_contents, shell=True, bufsize=-1, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (output, unused_error) = proc.communicate()
@@ -73,8 +73,8 @@ class XmlDictConfig(dict):
     And then use xmldict for what it is... a dict.
     '''
     def __init__(self, parent_element):
-        if parent_element.items():
-            self.update(dict(parent_element.items()))
+        if list(parent_element.items()):
+            self.update(dict(list(parent_element.items())))
         for element in parent_element:
             if element:
                 # treat like dict - we assume that if the first two tags
@@ -89,15 +89,15 @@ class XmlDictConfig(dict):
                     # the value is the list itself 
                     aDict = {element[0].tag: XmlListConfig(element)}
                 # if the tag has attributes, add those to the dict
-                if element.items():
-                    aDict.update(dict(element.items()))
+                if list(element.items()):
+                    aDict.update(dict(list(element.items())))
                 self.update({element.tag: aDict})
             # this assumes that if you've got an attribute in a tag,
             # you won't be having any text. This may or may not be a 
             # good idea -- time will tell. It works for the way we are
             # currently doing XML configuration files...
-            elif element.items():
-                self.update({element.tag: dict(element.items())})
+            elif list(element.items()):
+                self.update({element.tag: dict(list(element.items()))})
             # finally, if there are no child tags and no attributes, extract
             # the text
             else:
@@ -115,24 +115,11 @@ def remove_all(substr, str):
 def main():
 
     """Main"""
-    # Create cache dir if it does not exist
-    cachedir = '%s/cache' % os.path.dirname(os.path.realpath(__file__))
-    if not os.path.exists(cachedir):
-        os.makedirs(cachedir)
-
-    # Skip manual check
-    if len(sys.argv) > 1:
-        if sys.argv[1] == 'manualcheck':
-            print 'Manual check: skipping'
-            exit(0)
-
-    # Set the encoding
-    reload(sys)
-    sys.setdefaultencoding('utf8')
 
     result = []
     
     # Load and clean existing cache file of Jamf EAs
+    cachedir = '%s/cache' % os.path.dirname(os.path.realpath(__file__))
     if os.path.isfile(os.path.join(cachedir, 'extension_attributes.plist')):
         ea_cache = FoundationPlist.readPlist(os.path.join(cachedir, 'extension_attributes.plist'))
         for e_a in ea_cache:
@@ -153,11 +140,11 @@ def main():
                 utils.verifyFileOnlyWritableByMunkiAndRoot(script)
                 result.append(process_ea_xml(script))
                 
-            except utils.VerifyFilePermissionsError, e:
+            except utils.VerifyFilePermissionsError as e:
                 msg = (
                     "   Skipping execution due to failed file permissions verification: %s\n%s" % (script, str(e))
                 )
-                print msg
+                print(msg)
                 continue
 
     # Write extension attribute results to cache file
