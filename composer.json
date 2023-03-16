@@ -1,1 +1,5 @@
-{"require":{"php":"^7.0"},"license":"MIT","name":"tuxudo/extension_attributes","description":"extension attributes module for munkireport."}
+{
+  "license":"MIT",
+  "name":"tuxudo/extension_attributes",
+  "description":"extension attributes module for munkireport."
+}
