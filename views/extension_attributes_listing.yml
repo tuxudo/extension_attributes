@@ -1,0 +1,11 @@
+i18n_title: extension_attributes.report
+not_null_column: extension_attributes.displayname
+table:
+  - column: machine.computer_name
+    i18n_header: listing.computername
+    formatter: clientDetail
+    tab_link: tab_extension_attributes-tab
+  - column: reportdata.serial_number
+    i18n_header: serial
+  - {i18n_header: extension_attributes.displayname, column: extension_attributes.displayname}
+  - {i18n_header: extension_attributes.result, column: extension_attributes.result}
