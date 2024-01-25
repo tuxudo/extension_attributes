@@ -19,7 +19,7 @@ class Extensionattributes extends Migration
             $table->index('serial_number');
             $table->index('displayname');
             $table->index('displayincategory');
-            $table->index('dataType');
+            $table->index('datatype');
         });
     }
     
