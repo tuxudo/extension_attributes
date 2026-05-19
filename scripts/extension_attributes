@@ -8,7 +8,6 @@ import string
 import re
 from xml.etree import cElementTree as ElementTree
 
-sys.path.insert(0, '/usr/local/munki')
 sys.path.insert(0, '/usr/local/munkireport')
 
 from munkilib import FoundationPlist
@@ -28,11 +27,11 @@ def process_ea_xml(ea_xml):
 
     proc = subprocess.Popen(script_contents, shell=True, bufsize=-1, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (output, unused_error) = proc.communicate()
-    
+
     ea_item = {}
     ea_item['jamf_ea'] = True
     ea_item['displayname'] = xmldict['displayName']
-    
+
     if 'displayincategory' in ea_item:
         ea_item['displayincategory'] = xmldict['displayInCategory']
     if 'dataType' in ea_item:
@@ -45,7 +44,7 @@ def process_ea_xml(ea_xml):
 class XmlListConfig(list):
     def __init__(self, aList):
         for element in aList:
-            if element:
+            if len(element):
                 # treat like dict
                 if len(element) == 1 or element[0].tag != element[1].tag:
                     self.append(XmlDictConfig(element))
@@ -115,7 +114,7 @@ def main():
     """Main"""
 
     result = []
-    
+
     # Load and clean existing cache file of Jamf EAs
     cachedir = '%s/cache' % os.path.dirname(os.path.realpath(__file__))
     if os.path.isfile(os.path.join(cachedir, 'extension_attributes.plist')):
@@ -132,12 +131,12 @@ def main():
         for filename in os.listdir(path):
             if not filename.endswith('.xml') and not filename.endswith('.XML'): continue
             script = os.path.join(path, filename)
-            
+
             try:
                 # Verify permissions of Jamf ea.xml file
                 utils.verifyFileOnlyWritableByMunkiAndRoot(script)
                 result.append(process_ea_xml(script))
-                
+
             except utils.VerifyFilePermissionsError as e:
                 msg = (
                     "   Skipping execution due to failed file permissions verification: %s\n%s" % (script, str(e))
